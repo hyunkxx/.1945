@@ -5,6 +5,8 @@
 HWND      g_hWnd;
 HINSTANCE g_hInst;
 
+int GitHub = 0;
+
 RECT g_clientRect{ 0, 0, WIDTH, HIGHT };
 
 WCHAR szTitle[TEXT_LENGTH];
