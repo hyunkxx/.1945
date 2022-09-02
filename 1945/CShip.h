@@ -33,6 +33,11 @@ public:
 
 	void CreateBullet();
 	bool bIsAttackCheck() { return m_bAttackAble; };
+
+
+public: // PLTOYA
+	void Skill();
+
 private:
 	float m_fLocalTime;
 
@@ -44,7 +49,6 @@ private:
 
 	ULONGLONG attackTimer;
 	list<CObj*>* m_pBulletList;
-
 	//0으로 초기화 후 0으로 누르고있는 동안 누른상태일때 델타아입을 
 	//로컬타임에 누적시키고 로컬타임을 임의의 값 로컬타임을 곱해야함.
 };

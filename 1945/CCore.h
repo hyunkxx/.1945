@@ -26,7 +26,21 @@ public:
 private: /* Object */
 	CObj* m_pPlayer;
 	list<CObj*> m_pBulletList;
+
+// PLTOYA
+public:
+	static class CSkill* GetSkillInst() { return m_pSkill; }
+	static void		     SetSkill(CSkill* _Skill) { m_pSkill = _Skill; }
 private:
+	static CSkill* m_pSkill;
+private:
+	HBITMAP m_hBit;
+	HDC     m_subDC;
+private:
+	float	m_localTime = 0;
+//
+
+
 
 };
 

@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "Define.h"
+#include "def_Skill.h"
 
 
 using namespace std;
