@@ -61,4 +61,8 @@ void CInputManager::Update(float _fDeltaTime)
 		if (GetAsyncKeyState(VK_SPACE) & 0x8000 && pOwner)
 			pOwner->CreateBullet();
 	}
+
+	//PLTOYA
+	if (GetAsyncKeyState('1') & 0x8001 && pOwner)
+		pOwner->Skill();
 }

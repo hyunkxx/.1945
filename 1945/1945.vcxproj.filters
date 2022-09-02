@@ -33,6 +33,9 @@
     <Filter Include="src\CInputManager">
       <UniqueIdentifier>{54679672-ae61-467a-b89c-9ab61a8263f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\CSkill">
+      <UniqueIdentifier>{794d2298-1acb-4888-9561-7767f546be9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -68,6 +71,15 @@
     <ClInclude Include="CInputManager.h">
       <Filter>src\CInputManager</Filter>
     </ClInclude>
+    <ClInclude Include="CSkill.h">
+      <Filter>src\CSkill</Filter>
+    </ClInclude>
+    <ClInclude Include="def_Skill.h">
+      <Filter>src\CSkill</Filter>
+    </ClInclude>
+    <ClInclude Include="CSkill1.h">
+      <Filter>src\CSkill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -90,6 +102,12 @@
     </ClCompile>
     <ClCompile Include="CInputManager.cpp">
       <Filter>src\CInputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkill.cpp">
+      <Filter>src\CSkill</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkill1.cpp">
+      <Filter>src\CSkill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

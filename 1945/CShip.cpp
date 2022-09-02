@@ -3,6 +3,8 @@
 #include "CShip.h"
 #include "CBullet.h"
 
+#include "CSkill1.h"
+
 CShip::CShip()
 	: CObj()
 {
@@ -108,4 +110,13 @@ void CShip::CreateBullet()
 
 	m_pBulletList->push_back(new CBullet(m_transform.fX - 7, m_transform.fY));
 	m_pBulletList->push_back(new CBullet(m_transform.fX + 7, m_transform.fY));
+}
+
+//PLTOYA
+void CShip::Skill()
+{
+	if (CCore::GetSkillInst())
+		return;
+
+	CCore::SetSkill(new CSkill1);
 }
