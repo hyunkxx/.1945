@@ -47,9 +47,19 @@ void CCore::Update(float _fDeltaTime)
 	g_DeltaTime = _fDeltaTime;
 	CInputManager::Update(_fDeltaTime);
 
-	for (auto* elem : m_pBulletList)
+	for (auto iter = m_pBulletList.begin() ; iter != m_pBulletList.end() ; ++iter)
 	{
-		elem->Update(_fDeltaTime);
+		(*iter)->Update(_fDeltaTime);
+
+		if (static_cast<CBullet*>((*iter))->IsDie())
+		{
+			delete[] (*iter);
+			iter = m_pBulletList.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
 	}
 
 	m_pPlayer->Update(_fDeltaTime);
@@ -60,8 +70,8 @@ void CCore::Render()
 	background();
 	/* Render */	//CObj->Render(m_hdc);
 
-	for (auto* elem : m_pBulletList)
-		elem->Render(m_hdc);
+	for (auto iter = m_pBulletList.begin(); iter != m_pBulletList.end(); iter++)
+		(*iter)->Render(m_hdc);
 
 	m_pPlayer->Render(m_hdc);
 }

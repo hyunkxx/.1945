@@ -18,9 +18,6 @@ public:
 	void  SetCurSpeed(float _fSpeed) { m_fCurSpeed = _fSpeed; }
 	float GetCurSpeed() { return m_fCurSpeed; }
 
-	void  SetMaxSpeed(float _fSpeed) { m_fMaxSpeed = _fSpeed; }
-	float GetMaxSpeed() { return m_fMaxSpeed; }
-
 	void  SetBullet(list<CObj*>* _pBulletList);
 public:
 	void MoveLeft();
@@ -28,16 +25,12 @@ public:
 	void MoveUp();
 	void MoveDown();
 
-	void Accelerate();
-	void Decelderate();
-
 	void CreateBullet();
 	bool bIsAttackCheck() { return m_bAttackAble; };
 private:
 	float m_fLocalTime;
 
 	float m_fCurSpeed;
-	float m_fMaxSpeed;
 
 	float m_fAttackDelay;
 	bool  m_bAttackAble;
