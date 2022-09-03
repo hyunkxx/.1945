@@ -10,7 +10,6 @@ public:
 public:
 	static float g_DeltaTime;
 	static RECT g_clientRect;
-	
 public:
 	void Initalize(HWND _hWnd, HINSTANCE _hInstance, RECT _clientRect);
 	void Update(float _fDeltaTime);
@@ -19,6 +18,7 @@ public:
 private:
 	void background();
 public:
+
 	HDC				m_hdc;
 	HWND			m_hWnd;
 	HINSTANCE		m_hInstance;
@@ -29,7 +29,6 @@ private: /* Object */
 
 // PLTOYA
 public:
-	static HWND g_HWND;
 	static class CSkill* GetSkillInst() { return m_pSkill; }
 	static void		     SetSkill(CSkill* _Skill) { m_pSkill = _Skill; }
 private:

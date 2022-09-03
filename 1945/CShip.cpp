@@ -3,7 +3,7 @@
 #include "CShip.h"
 #include "CBullet.h"
 
-#include "CSkill3.h"
+#include "CSkill2.h"
 
 CShip::CShip()
 	: CObj()
@@ -118,5 +118,5 @@ void CShip::Skill()
 	if (CCore::GetSkillInst())
 		return;
 
-	CCore::SetSkill(new CSkill3);
+	CCore::SetSkill(new CSkill2);
 }

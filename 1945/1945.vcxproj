@@ -156,7 +156,6 @@
     <ClInclude Include="CSkill.h" />
     <ClInclude Include="CSkill1.h" />
     <ClInclude Include="CSkill2.h" />
-    <ClInclude Include="CSkill3.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -174,7 +173,6 @@
     <ClCompile Include="CSkill.cpp" />
     <ClCompile Include="CSkill1.cpp" />
     <ClCompile Include="CSkill2.cpp" />
-    <ClCompile Include="CSkill3.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
