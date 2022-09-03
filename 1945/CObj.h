@@ -44,7 +44,7 @@ public:
 	void SetY(float _fY) { m_transform.fY = _fY; }
 	void SetScale(float _fScale) { m_transform.fY = _fScale; }
 
-	Transform GetTransform() { return m_transform; }
+	const Transform& GetTransform() { return m_transform; }
 	void	  SetTrnasform(Transform _transform) { m_transform = _transform; }
 	void	  SetTrnasform(float _xPos, float _yPos, float _fScale)
 	{

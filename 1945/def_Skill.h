@@ -16,4 +16,4 @@ struct POS
 	float Y_COM;
 };
 
-const float unitRadian = (3.141592 / 180.f);
+const float unitRadian = float(3.141592 / 180.f);

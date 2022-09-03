@@ -5,7 +5,7 @@
 CBullet::CBullet(float _xPos, float _yPos)
 	: CObj(_xPos, _yPos, 10.f)
 	, m_bDie (false)
-	, m_fSpeed(1000.f)
+	, m_fSpeed(1300.f)
     , m_fLocalTime(0.3f)
 {
 }
@@ -47,7 +47,7 @@ void CBullet::Render(HDC _hdc)
 void CBullet::moveUp()
 {
 	m_fLocalTime += CCore::g_DeltaTime;
-	m_transform.fY -= m_fSpeed * CCore::g_DeltaTime * 0.7f * m_fLocalTime;
+	m_transform.fY -= m_fSpeed * CCore::g_DeltaTime * 1.1f * m_fLocalTime;
 }
 
 void CBullet::dieCheck()
