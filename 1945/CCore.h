@@ -1,7 +1,7 @@
 #pragma once
 class CObj;
 class CBullet;
-class CUISystem;
+
 class CCore
 {
 public:
@@ -10,12 +10,7 @@ public:
 public:
 	static float g_DeltaTime;
 	static RECT g_clientRect;
-<<<<<<< Updated upstream
 	
-=======
-	static int g_nCurShipIndex;
-	static int g_nNextShipIndex;
->>>>>>> Stashed changes
 public:
 	void Initalize(HWND _hWnd, HINSTANCE _hInstance, RECT _clientRect);
 	void Update(float _fDeltaTime);
@@ -27,8 +22,9 @@ public:
 	HDC				m_hdc;
 	HWND			m_hWnd;
 	HINSTANCE		m_hInstance;
+
 private: /* Object */
-	CObj* m_pShip[3];
+	CObj* m_pPlayer;
 	list<CObj*> m_pBulletList;
 
 // PLTOYA
@@ -44,5 +40,8 @@ private:
 private:
 	float	m_localTime = 0;
 //
+
+
+
 };
 

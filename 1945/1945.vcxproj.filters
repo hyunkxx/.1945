@@ -36,9 +36,6 @@
     <Filter Include="src\CSkill">
       <UniqueIdentifier>{794d2298-1acb-4888-9561-7767f546be9b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\CUISystem">
-      <UniqueIdentifier>{7c58b5ae-97a1-4ed7-bf75-8e0650c12346}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -62,7 +59,7 @@
     <ClInclude Include="CObj.h">
       <Filter>src\CObj</Filter>
     </ClInclude>
-    <ClInclude Include="CShipBase.h">
+    <ClInclude Include="CShip.h">
       <Filter>src\CShip</Filter>
     </ClInclude>
     <ClInclude Include="CCore.h">
@@ -83,16 +80,11 @@
     <ClInclude Include="CSkill1.h">
       <Filter>src\CSkill</Filter>
     </ClInclude>
-<<<<<<< Updated upstream
     <ClInclude Include="CSkill2.h">
       <Filter>src\CSkill</Filter>
     </ClInclude>
     <ClInclude Include="CSkill3.h">
       <Filter>src\CSkill</Filter>
-=======
-    <ClInclude Include="CUISystem.h">
-      <Filter>src\CUISystem</Filter>
->>>>>>> Stashed changes
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -105,7 +97,7 @@
     <ClCompile Include="CObj.cpp">
       <Filter>src\CObj</Filter>
     </ClCompile>
-    <ClCompile Include="CShipBase.cpp">
+    <ClCompile Include="CShip.cpp">
       <Filter>src\CShip</Filter>
     </ClCompile>
     <ClCompile Include="CCore.cpp">
@@ -123,16 +115,11 @@
     <ClCompile Include="CSkill1.cpp">
       <Filter>src\CSkill</Filter>
     </ClCompile>
-<<<<<<< Updated upstream
     <ClCompile Include="CSkill2.cpp">
       <Filter>src\CSkill</Filter>
     </ClCompile>
     <ClCompile Include="CSkill3.cpp">
       <Filter>src\CSkill</Filter>
-=======
-    <ClCompile Include="CUISystem.cpp">
-      <Filter>src\CUISystem</Filter>
->>>>>>> Stashed changes
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

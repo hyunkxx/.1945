@@ -1,6 +1,6 @@
 #pragma once
 
-class CShipBase;
+class CShip;
 
 class CInputManager
 {
@@ -8,10 +8,10 @@ public:
 	CInputManager() = delete;
 	~CInputManager() = delete;
 public:
-	static void Possess(CShipBase* _pShip);
+	static void Possess(CShip* _pShip);
 	static void UnPossess();
 	static void Update(float _fDeltaTime);
 public:
-	static CShipBase* pOwner;
+	static CShip* pOwner;
 };
 
