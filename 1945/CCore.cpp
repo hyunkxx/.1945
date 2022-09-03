@@ -10,6 +10,7 @@ float CCore::g_DeltaTime;
 RECT CCore::g_clientRect;
 
 //PLTOYA
+HWND CCore::g_HWND = nullptr;
 CSkill* CCore::m_pSkill = nullptr;
 
 CCore::CCore()
@@ -28,6 +29,10 @@ CCore::~CCore()
 void CCore::Initalize(HWND _hWnd, HINSTANCE _hInstance, RECT _clientRect)
 {
 	m_hWnd = _hWnd;
+
+	//PLTOYA
+	g_HWND = _hWnd;
+
 	m_hdc = GetDC(m_hWnd);
 	m_hInstance = _hInstance;
 	g_clientRect = _clientRect;

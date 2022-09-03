@@ -83,6 +83,9 @@
     <ClInclude Include="CSkill2.h">
       <Filter>src\CSkill</Filter>
     </ClInclude>
+    <ClInclude Include="CSkill3.h">
+      <Filter>src\CSkill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -113,6 +116,9 @@
       <Filter>src\CSkill</Filter>
     </ClCompile>
     <ClCompile Include="CSkill2.cpp">
+      <Filter>src\CSkill</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkill3.cpp">
       <Filter>src\CSkill</Filter>
     </ClCompile>
   </ItemGroup>

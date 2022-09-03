@@ -27,6 +27,22 @@ CSkill2::CSkill2()
 	}
 
 	m_Pos = POS{WIDTH/2,1000};
+
+
+	// Æ÷Å¾
+	m_turretPos = m_Pos;
+	m_turretRadi = 50.f;
+	Update_Rect_S(m_turretRECT, m_turretPos, m_turretRadi);
+	
+	m_disBarrel = 50.f;
+
+	m_barrelAngle[0] = 0.f;
+	m_barrelAngle[1] = 3.141592f * 0.5f;
+	m_barrelAngle[2] = 3.141592f;
+	m_barrelAngle[3] = 3.141592f * 1.5f;
+
+
+	
 }
 
 void CSkill2::Update(float _fDeltaTime)
@@ -46,6 +62,7 @@ void CSkill2::Update(float _fDeltaTime)
 	if (m_localTime > 3.5f)
 	{
 		m_midTime += dt;
+
 		m_Pos.Y_COM -= 100.f * dt;
 		m_Pos.Y_COM += 0.5f* -10.f * m_midTime * m_midTime;
 	}
@@ -62,6 +79,55 @@ void CSkill2::Update(float _fDeltaTime)
 		m_AIR[i].Y_COM = 5*AIR_points[i].Y_COM + m_Pos.Y_COM;
 	}
 
+	m_turretPos = m_Pos;
+	for (int i = 0; i < 4; ++i)
+		m_barrelPos[i] = m_Pos;
+	Update_Rect_S(m_turretRECT, m_turretPos, m_turretRadi);
+
+	for (int i = 0; i < 4; ++i)
+	{
+		m_barrelAngle[i] += 3.f*dt * m_localTime;
+		m_barrelPos[i].X_COM += m_disBarrel * cosf(m_barrelAngle[i]);
+		m_barrelPos[i].Y_COM -= m_disBarrel * sinf(m_barrelAngle[i]);
+	}
+		
+
+	for(int i=0;i<4;++i)
+		for (auto& bullet : m_bullets[i])
+		{
+			bullet.localTime += dt;
+
+			bullet.pos.Y_COM -= 300.f * dt;
+
+			bullet.pos.X_COM += 2500.f * dt * bullet.localTime * cosf(bullet.angle);
+			bullet.pos.Y_COM -= 2500.f * dt * bullet.localTime *sinf(bullet.angle);
+			Update_Rect_S(bullet.rect, bullet.pos, m_bulletRadi);
+		}
+
+
+	m_fireTime += dt;
+
+	if (m_fireTime > m_FT_Boundery)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			Update_Rect_S(m_bulletRECT, m_barrelPos[i], m_bulletRadi);
+			m_bullets[i].push_back({ m_barrelPos[i],m_bulletRECT, m_barrelAngle[i],0.f });
+		}
+		
+		m_fireTime = 0;
+		
+		if (m_localTime > 1.6f)
+			m_FT_Boundery = 0.07f;
+		if (m_localTime > 1.9f)
+			m_FT_Boundery = 0.04f;
+		if(m_localTime > 2.3f)
+			m_FT_Boundery = 0.02f;
+
+		if (m_localTime > 2.5f)
+			m_FT_Boundery = 0.01f;
+	}
+
 }
 
 void CSkill2::Render(HDC _hdc)
@@ -75,4 +141,16 @@ void CSkill2::Render(HDC _hdc)
 		air[i].y = m_AIR[i].Y_COM;
 	}
 	Polygon(hdc, air, 12);
+
+	Ellipse(hdc, m_turretRECT.left, m_turretRECT.top, m_turretRECT.right, m_turretRECT.bottom);
+	
+	for (int i = 0; i < 4; ++i)
+	{
+		MoveToEx(hdc, (int)m_turretPos.X_COM, (int)m_turretPos.Y_COM, nullptr);
+		LineTo(hdc, m_barrelPos[i].X_COM, m_barrelPos[i].Y_COM);
+	}
+	
+	for(int i=0;i<4;++i)
+		for (auto& bullet : m_bullets[i])
+			Ellipse(hdc, bullet.rect.left, bullet.rect.top, bullet.rect.right, bullet.rect.bottom);
 }
