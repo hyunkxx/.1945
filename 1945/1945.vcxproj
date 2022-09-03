@@ -90,6 +90,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -106,6 +107,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,6 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,6 +141,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,11 +156,15 @@
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CInputManager.h" />
     <ClInclude Include="CObj.h" />
-    <ClInclude Include="CShip.h" />
+    <ClInclude Include="CShipBase.h" />
     <ClInclude Include="CSkill.h" />
     <ClInclude Include="CSkill1.h" />
+<<<<<<< Updated upstream
     <ClInclude Include="CSkill2.h" />
     <ClInclude Include="CSkill3.h" />
+=======
+    <ClInclude Include="CUISystem.h" />
+>>>>>>> Stashed changes
     <ClInclude Include="Define.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -170,11 +178,15 @@
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CInputManager.cpp" />
     <ClCompile Include="CObj.cpp" />
-    <ClCompile Include="CShip.cpp" />
+    <ClCompile Include="CShipBase.cpp" />
     <ClCompile Include="CSkill.cpp" />
     <ClCompile Include="CSkill1.cpp" />
+<<<<<<< Updated upstream
     <ClCompile Include="CSkill2.cpp" />
     <ClCompile Include="CSkill3.cpp" />
+=======
+    <ClCompile Include="CUISystem.cpp" />
+>>>>>>> Stashed changes
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

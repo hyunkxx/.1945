@@ -1,14 +1,16 @@
 #include "pch.h"
 #include "CCore.h"
-#include "CShip.h"
+#include "CShipBase.h"
 #include "CInputManager.h"
 #include "CBullet.h"
-
 #include "CSkill.h"
+#include "CUISystem.h"
 
 float CCore::g_DeltaTime;
 RECT CCore::g_clientRect;
 
+int CCore::g_nCurShipIndex;
+int CCore::g_nNextShipIndex;
 //PLTOYA
 HWND CCore::g_HWND = nullptr;
 CSkill* CCore::m_pSkill = nullptr;
@@ -16,9 +18,12 @@ CSkill* CCore::m_pSkill = nullptr;
 CCore::CCore()
 	: m_hdc(0)
 	, m_hWnd(0)
+	, m_hBit(0)
+	, m_subDC(0)
 	, m_hInstance(0)
-	, m_pPlayer(nullptr)
 {
+	for (int i = 0; i < SHIP_COUNT; i++)
+		m_pShip[i] = nullptr;
 }
 
 CCore::~CCore()
@@ -37,19 +42,51 @@ void CCore::Initalize(HWND _hWnd, HINSTANCE _hInstance, RECT _clientRect)
 	m_hInstance = _hInstance;
 	g_clientRect = _clientRect;
 
-	/* Object */
-	m_pPlayer = new CShip(WIDTH * 0.5f, HIGHT * 0.8f, 40.f);
-	CInputManager::Possess(static_cast<CShip*>(m_pPlayer));
+	for (int i = 0; i < SHIP_COUNT; i++)
+	{
+		m_pShip[i] = new CShipBase(WIDTH - WIDTH, HIGHT * 0.8f, 40.f);
+	}
 
-	/* Initalize Call */
-	m_pPlayer->Initalize();
+	m_pShip[CCore::g_nCurShipIndex]->SetX(WIDTH / 2);
+
+	for (int i = 0; i < SHIP_COUNT; i++)
+	{
+		static_cast<CShipBase*>(m_pShip[i])->SetShipList(m_pShip);
+	}
+
+	for (auto* ship : m_pShip)
+		static_cast<CShipBase*>(ship)->Initalize();
+
+	int i = 0;
+	for (auto* ship : m_pShip)
+	{
+		static_cast<CShipBase*>(ship)->SetID(SHIP_ID(i));
+		i++;
+	}
+
+	//static_cast<CShipBase*>(m_pShip[0])->SetCurHealth(100);
+	//static_cast<CShipBase*>(m_pShip[1])->SetCurHealth(100);
+	//static_cast<CShipBase*>(m_pShip[2])->SetCurHealth(100);
+
+	CInputManager::Possess(static_cast<CShipBase*>(m_pShip[g_nCurShipIndex]));
+	
+	for (int i = 0; i < SHIP_COUNT; i++)
+		CUISystem::ConnectShip(m_pShip);
 
 	for (auto* elem : m_pBulletList)
 	{
 		elem->Initalize();
 	}
 
-	static_cast<CShip*>(m_pPlayer)->SetBullet(&m_pBulletList);
+	for (auto* iter : m_pShip)
+		static_cast<CShipBase*>(iter)->SetBullet(&m_pBulletList);
+
+	//스피드 , 공격력 , 체력 , 발사속도
+	// 1. 스피드 빠름 - 공격력 낮음 -  발사속도 보통  
+	// 2. 스피드 느림 - 공격력 높음 -  발사속도 느림
+	// 3. 스피드 보통 - 공격력 보통 -  발사속도 보통
+	//static_cast<CShipBase*>(m_pShip[0])->
+
 
 	//PLTOYA
 	m_hBit = CreateCompatibleBitmap(m_hdc, WIDTH, HIGHT);
@@ -57,7 +94,6 @@ void CCore::Initalize(HWND _hWnd, HINSTANCE _hInstance, RECT _clientRect)
 
 	HBITMAP hDefaultBitmap = (HBITMAP)SelectObject(m_subDC, m_hBit);
 	DeleteObject(hDefaultBitmap);
-
 	//
 }
 
@@ -69,12 +105,30 @@ void CCore::Update(float _fDeltaTime)
 	g_DeltaTime = _fDeltaTime;
 	CInputManager::Update(_fDeltaTime);
 
+<<<<<<< Updated upstream
 	for (auto* elem : m_pBulletList)
 	{
 		elem->Update(_fDeltaTime);
+=======
+	for (auto iter = m_pBulletList.begin() ; iter != m_pBulletList.end() ; )
+	{
+		(*iter)->Update(_fDeltaTime);
+
+		if (static_cast<CBullet*>((*iter))->IsDie())
+		{
+			delete (*iter);
+			iter = m_pBulletList.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+>>>>>>> Stashed changes
 	}
 
-	m_pPlayer->Update(_fDeltaTime);
+	for (int i = 0 ;  i < SHIP_COUNT ; i++)
+		m_pShip[i]->Update(_fDeltaTime);
+
 
 	// PLTOYA
 	if (m_pSkill && !m_pSkill->IsDead())
@@ -86,11 +140,14 @@ void CCore::Update(float _fDeltaTime)
 			m_pSkill = nullptr;
 		}
 	}
+
+	CUISystem::Update(_fDeltaTime);
 }
 
 void CCore::Render()
 {
 	background();
+
 	// PLTOYA
 	m_localTime += g_DeltaTime;
 	if (-45 + 200.f * m_localTime > 45.0001f)
@@ -99,42 +156,50 @@ void CCore::Render()
 	HBRUSH myBrush, tempBrush;
 	tempBrush = (HBRUSH)CreateSolidBrush(RGB(80, 80, 80));
 	myBrush = (HBRUSH)SelectObject(m_subDC, tempBrush);
-	Rectangle(m_subDC, WIDTH / 2 - 45, 0, WIDTH / 2 + 45, 700);
+	Rectangle(m_subDC, WIDTH / 2 - 90, 0, WIDTH / 2 + 90, 700);
 	SelectObject(m_subDC, myBrush);
 	DeleteObject(tempBrush);
 
 	tempBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 0));
 	myBrush = (HBRUSH)SelectObject(m_subDC, tempBrush);
-	Rectangle(m_subDC, WIDTH / 2 - 5, -45 + 200.f * m_localTime, WIDTH / 2 + 5, 0 + 200.f * m_localTime);
-	Rectangle(m_subDC, WIDTH / 2 - 5, 45 + 200.f * m_localTime, WIDTH / 2 + 5, 90 + 200.f * m_localTime);
-	Rectangle(m_subDC, WIDTH / 2 - 5, 135 + 200.f * m_localTime, WIDTH / 2 + 5, 180 + 200.f * m_localTime);
-	Rectangle(m_subDC, WIDTH / 2 - 5, 225 + 200.f * m_localTime, WIDTH / 2 + 5, 270 + 200.f * m_localTime);
-	Rectangle(m_subDC, WIDTH / 2 - 5, 315 + 200.f * m_localTime, WIDTH / 2 + 5, 360 + 200.f * m_localTime);
-	Rectangle(m_subDC, WIDTH / 2 - 5, 405 + 200.f * m_localTime, WIDTH / 2 + 5, 450 + 200.f * m_localTime);
-	Rectangle(m_subDC, WIDTH / 2 - 5, 495 + 200.f * m_localTime, WIDTH / 2 + 5, 540 + 200.f * m_localTime);
-	Rectangle(m_subDC, WIDTH / 2 - 5, 585 + 200.f * m_localTime, WIDTH / 2 + 5, 630 + 200.f * m_localTime);
-	Rectangle(m_subDC, WIDTH / 2 - 5, 675 + 200.f * m_localTime, WIDTH / 2 + 5, 720 + 200.f * m_localTime);
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(-45 + 400.f * m_localTime), WIDTH / 2 + 5, static_cast < int>(0 +   400.f * m_localTime));
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(45  + 400.f * m_localTime), WIDTH  / 2 + 5, static_cast < int>(90 + 400.f * m_localTime));
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(135 + 400.f * m_localTime), WIDTH / 2 + 5, static_cast < int>(180 + 400.f * m_localTime));
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(225 + 400.f * m_localTime), WIDTH / 2 + 5, static_cast < int>(270 + 400.f * m_localTime));
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(315 + 400.f * m_localTime), WIDTH / 2 + 5, static_cast < int>(360 + 400.f * m_localTime));
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(405 + 400.f * m_localTime), WIDTH / 2 + 5, static_cast < int>(450 + 400.f * m_localTime));
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(495 + 400.f * m_localTime), WIDTH / 2 + 5, static_cast < int>(540 + 400.f * m_localTime));
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(585 + 400.f * m_localTime), WIDTH / 2 + 5, static_cast < int>(630 + 400.f * m_localTime));
+	Rectangle(m_subDC, WIDTH / 2 - 5, static_cast<int>(675 + 400.f * m_localTime), WIDTH / 2 + 5, static_cast < int>(720 + 400.f * m_localTime));
 
 	SelectObject(m_subDC, myBrush);
 	DeleteObject(tempBrush);
+
+	// PLTOYA
+	if (m_pSkill && !m_pSkill->IsDead())
+		m_pSkill->Render(m_subDC);
 
 	/* Render */	//CObj->Render(m_hdc);
 
 	for (auto* elem : m_pBulletList)
 		elem->Render(m_subDC);
 
-	m_pPlayer->Render(m_subDC);
+	for (auto& iter : m_pShip)
+		iter->Render(m_subDC);
 
-	// PLTOYA
-	if (m_pSkill && !m_pSkill->IsDead())
-		m_pSkill->Render(m_subDC);
+	//UI > Render
+	CUISystem::Render(m_subDC);
+
 	BitBlt(m_hdc, 0, 0, WIDTH, HIGHT, m_subDC, 0, 0, SRCCOPY);
-
 }
 
 void CCore::Release()
 {
 	ReleaseDC(m_hWnd, m_hdc);
+
+
+	for (auto& iter : m_pShip)
+		delete iter;
 
 	//PLTOYA
 	DeleteDC(m_subDC);

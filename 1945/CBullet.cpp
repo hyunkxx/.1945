@@ -3,6 +3,12 @@
 
 CBullet::CBullet(float _xPos, float _yPos)
 	: CObj(_xPos, _yPos, 10.f)
+<<<<<<< Updated upstream
+=======
+	, m_bDie (false)
+	, m_fSpeed(1300.f)
+    , m_fLocalTime(0.3f)
+>>>>>>> Stashed changes
 {
 	Initalize();
 }
@@ -40,3 +46,20 @@ void CBullet::Render(HDC _hdc)
 	DeleteObject(inBrush);
 	DeleteObject(outBrush);
 }
+<<<<<<< Updated upstream
+=======
+
+void CBullet::moveUp()
+{
+	m_fLocalTime += CCore::g_DeltaTime;
+	m_transform.fY -= m_fSpeed * CCore::g_DeltaTime * 1.1f * m_fLocalTime;
+}
+
+void CBullet::dieCheck()
+{
+	if (m_transform.fY < -50)
+	{
+		m_bDie = true;
+	}
+}
+>>>>>>> Stashed changes
