@@ -2,6 +2,7 @@
 #include "CInputManager.h"
 #include "CCore.h"
 #include "CShipBase.h"
+#include "CUISystem.h"
 
 CShipBase* CInputManager::pOwner;
 
@@ -50,7 +51,7 @@ void CInputManager::Update(float _fDeltaTime)
 	}
 
 	//PLTOYA
-	if (GetAsyncKeyState('Q') & 0x8001 && pOwner)
+	if (GetAsyncKeyState('R') & 0x8001 && pOwner)
 	{
 		if(pOwner->m_bActive)
 			pOwner->Skill();
@@ -58,17 +59,28 @@ void CInputManager::Update(float _fDeltaTime)
 
 	if (GetAsyncKeyState(VK_TAB) & 0x0001 && pOwner)
 	{
-	
 		if (!pOwner->IsSwaping())
 		{
 			pOwner->ChangeShip();
 		}
 	}
 
+	if (GetAsyncKeyState(VK_END) & 0x0001)
+	{
+		CUISystem::SetDebugMode(!CUISystem::DebugMode);
+	}
+
+
 	//Hit
 	if (GetAsyncKeyState(VK_F11) & 0x0001 && pOwner)
 	{
 		if(pOwner->m_bActive)
 			pOwner->HitDamage(5);
+	}
+
+	if (GetAsyncKeyState(VK_INSERT) & 0x0001 && pOwner)
+	{
+		if (pOwner->m_bActive)
+			pOwner->Recycle();
 	}
 }

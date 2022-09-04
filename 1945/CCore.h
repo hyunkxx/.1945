@@ -2,6 +2,7 @@
 class CObj;
 class CBullet;
 class CUISystem;
+
 class CCore
 {
 public:
@@ -13,6 +14,7 @@ public:
 	static int g_nCurShipIndex;
 	static int g_nNextShipIndex;
 	static HWND	g_HWND;
+	static bool g_bExit;
 public:
 	void Initalize(HWND _hWnd, HINSTANCE _hInstance, RECT _clientRect);
 	void Update(float _fDeltaTime);
@@ -26,8 +28,10 @@ public:
 	HINSTANCE		m_hInstance;
 private: /* Object */
 	CObj* m_pShip[3];
-	list<CObj*> m_pBulletList;
 
+	list<CObj*> m_pBulletListOne;
+	//list<CObj*> m_pBulletListTwo;
+	//list<CObj*> m_pBulletListTrd;
 // PLTOYA
 public:
 	static class CSkill* GetSkillInst() { return m_pSkill; }

@@ -6,6 +6,7 @@
 #include "CSkill1.h"
 #include "CSkill2.h"
 #include "CSkill3.h"
+#include "CUISystem.h"
 
 
 CShipBase::CShipBase()
@@ -32,9 +33,9 @@ CShipBase::~CShipBase()
 }
 
 void CShipBase::Initalize()
-{	
+{
 	//진입&복귀할 오른쪽 포인트
-	m_EntryPoint.x = WIDTH+200;
+	m_EntryPoint.x = WIDTH + 200;
 	m_EntryPoint.y = HIGHT;
 
 	m_nMaxHealth = 100;
@@ -42,11 +43,14 @@ void CShipBase::Initalize()
 
 	m_nMaxShield = 100;
 	m_nCurShield = m_nMaxShield;
-
-	m_fCurSpeed = 150.f;
 	m_fLocalTime = 0.0f;
-	m_fAttackDelay = 100.f;
+
+	m_fLowSpeed = 150.f;
+	m_fLowSpeed = 150.f;
 	
+	m_fLowAttackDelay = 100.f;
+	m_fCurAttackDelay = 100.f;
+
 	m_bAttackAble = true;
 	attackTimer = 0;
 
@@ -65,12 +69,14 @@ void CShipBase::Update(float _fDeltaTime)
 	//비활성화 된 Ship들에 관련된 내부적으로 틱 & 활성화된 Ship의 Y위치 동기화
 	UnActiveShip(_fDeltaTime);
 
+	
+
 	//총알 발사시 딜레이(100.f)
-	if (GetTickCount64() >= attackTimer + m_fAttackDelay)
+	if (GetTickCount64() >= attackTimer + m_fCurAttackDelay)
 	{
 		m_bAttackAble = true;
 		attackTimer = GetTickCount64();
-	}		
+	}
 
 	if (m_bSwapping)
 	{
@@ -85,8 +91,8 @@ void CShipBase::Update(float _fDeltaTime)
 			CInputManager::UnPossess();
 			CInputManager::Possess(static_cast<CShipBase*>(m_pCopyShip[CCore::g_nCurShipIndex % 3]));
 		}
-		
-		else if(GetTickCount64() - swapTimer <= m_fSwapDelay)
+
+		else if (GetTickCount64() - swapTimer <= m_fSwapDelay)
 		{
 			//스왑하는 시간동안 공격 불가능
 			m_bAttackAble = false;
@@ -100,7 +106,7 @@ void CShipBase::Update(float _fDeltaTime)
 				static_cast<CShipBase*>(m_pCopyShip[CCore::g_nCurShipIndex % 3])->Swap(_fDeltaTime);
 			}
 			else
-			{	
+			{
 				//Enter
 				static_cast<CShipBase*>(m_pCopyShip[CCore::g_nCurShipIndex + 1 % 3])->Swap(_fDeltaTime);
 				//Return
@@ -114,47 +120,101 @@ void CShipBase::Update(float _fDeltaTime)
 
 void CShipBase::Render(HDC _hdc)
 {
+
 	WCHAR* buffer[3];
 
-	for(int i = 0 ; i < 3 ; i++)
+	for (int i = 0; i < 3; i++)
 		buffer[i] = new WCHAR[TEXT_LENGTH];
 
 	int i = 0;
-	for(int i = 0 ; i < SHIP_COUNT ; i++)
+	for (int i = 0; i < SHIP_COUNT; i++)
 	{
 		wsprintf(buffer[i], L"CurIndex %d  ID %d   Active %d  Attackable %d  Swapping  %d"
-			, CCore::g_nCurShipIndex,m_eShipID, m_bActive, m_bAttackAble,m_bSwapping);
+			, CCore::g_nCurShipIndex, m_eShipID, m_bActive, m_bAttackAble, m_bSwapping);
 	}
 
+	HBRUSH one, two, trd , myBrush;
+	HPEN pen, my;
+	pen = (HPEN)CreatePen(PS_INSIDEFRAME, 5, RGB(255, 255,255));
+	one = (HBRUSH)CreateSolidBrush(RGB(255,165,0));
+	two = (HBRUSH)CreateSolidBrush(RGB(0, 255, 212));
+	trd = (HBRUSH)CreateSolidBrush(RGB(255, 192, 203));
+
+	my = (HPEN)SelectObject(_hdc, pen);
 	switch (m_eShipID)
 	{
-	case SHIP_ONE:
-		Rectangle(_hdc, m_rect.left, m_rect.top, m_rect.right, m_rect.bottom);
-		TextOut(_hdc, 10, 30, buffer[0], lstrlen(buffer[0]));
+	case SHIP_ONE: 
+		myBrush = (HBRUSH)SelectObject(_hdc, one);
+		Ellipse(_hdc, m_rect.left, m_rect.top, m_rect.right, m_rect.bottom);
+
+		if (CUISystem::DebugMode)
+		{
+			TextOut(_hdc, 10, 30, buffer[0], lstrlen(buffer[0]));
+		}
+
+		(HBRUSH)SelectObject(_hdc, myBrush);
 		break;
 	case SHIP_TWO:
-		Rectangle(_hdc, m_rect.left, m_rect.top, m_rect.right, m_rect.bottom);
-		TextOut(_hdc, 10, 50, buffer[1], lstrlen(buffer[1]));
+		myBrush = (HBRUSH)SelectObject(_hdc, two);
+		Ellipse(_hdc, m_rect.left, m_rect.top, m_rect.right, m_rect.bottom);
+		if (CUISystem::DebugMode)
+		{
+			TextOut(_hdc, 10, 50, buffer[1], lstrlen(buffer[1]));
+		}
+		(HBRUSH)SelectObject(_hdc, myBrush);
 		break;
 	case SHIP_TRD:
+		myBrush = (HBRUSH)SelectObject(_hdc, trd);
 		Ellipse(_hdc, m_rect.left, m_rect.top, m_rect.right, m_rect.bottom);
-		TextOut(_hdc, 10, 70, buffer[2], lstrlen(buffer[2]));
+		if (CUISystem::DebugMode)
+		{
+			TextOut(_hdc, 10, 70, buffer[2], lstrlen(buffer[2]));
+		}
+		(HBRUSH)SelectObject(_hdc, myBrush);
 		break;
 	}
+	(HPEN)SelectObject(_hdc, my);
+
+	DeleteObject(pen);
+	DeleteObject(one);
+	DeleteObject(two);
+	DeleteObject(trd);
 }
 
-void CShipBase::SetBullet(list<CObj*>* _pBulletList)
+void CShipBase::SetBulletOne(list<CObj*>* _pBulletList)
 {
-	m_pBulletList = _pBulletList;
+	m_pBulletList_one = _pBulletList;
+}
+void CShipBase::SetBulletTwo(list<CObj*>* _pBulletList)
+{
+	m_pBulletList_two = _pBulletList;
+}
+void CShipBase::SetBulletTrd(list<CObj*>* _pBulletList)
+{
+	m_pBulletList_trd = _pBulletList;
 }
 void CShipBase::CreateBullet()
 {
-	attackTimer = GetTickCount64();
-
-	m_bAttackAble = false;
-
-	m_pBulletList->push_back(new CBullet(m_transform.fX - 7, m_transform.fY));
-	m_pBulletList->push_back(new CBullet(m_transform.fX + 7, m_transform.fY));
+	switch (m_eShipID)
+	{
+	case SHIP_ONE: // 빠른
+		attackTimer = GetTickCount64();
+		m_bAttackAble = false;
+		m_pBulletList_one->push_back(new CBullet(m_transform.fX - 7, m_transform.fY));
+		m_pBulletList_one->push_back(new CBullet(m_transform.fX + 7, m_transform.fY));
+		break;
+	case SHIP_TWO: // 보통
+		attackTimer = GetTickCount64();
+		m_bAttackAble = false;
+		m_pBulletList_one->push_back(new CBullet(m_transform.fX - 7, m_transform.fY));
+		m_pBulletList_one->push_back(new CBullet(m_transform.fX + 7, m_transform.fY));
+		break;
+	case SHIP_TRD: // 느린 
+		attackTimer = GetTickCount64();
+		m_bAttackAble = false;
+		m_pBulletList_one->push_back(new CBullet(m_transform.fX, m_transform.fY + 3));
+		break;
+	}
 }
 
 void CShipBase::MoveLeft()
@@ -210,8 +270,8 @@ void CShipBase::Swap(float _fDeltaTime)
 	else
 	{
 		//진입
-		m_transform.fY = Lerp(m_transform.fY,  300 ,_fDeltaTime); 
-		m_transform.fX = Lerp(m_transform.fX, -350 ,_fDeltaTime);
+		m_transform.fY = Lerp(m_transform.fY, 300, _fDeltaTime);
+		m_transform.fX = Lerp(m_transform.fX, -350, _fDeltaTime);
 	}
 }
 
@@ -225,7 +285,7 @@ void CShipBase::SyncPositionY(float _fDeltaTime)
 		m_transform.fX = static_cast<float>(m_EntryPoint.x);
 
 }
-void CShipBase::TickRecovery(const float _fDuration,const int _value)
+void CShipBase::TickRecovery(const float _fDuration, const int _value)
 {
 	if (!m_bTick)
 	{
@@ -273,7 +333,9 @@ void CShipBase::HitDamage(int _iDamage)
 
 CHEACK:
 	if (m_nCurHealth <= 0)
-		m_bIsDie = true;
+	{
+		Die();
+	}
 }
 
 void CShipBase::UnActiveShip(float _fDeltaTime)
@@ -285,11 +347,36 @@ void CShipBase::UnActiveShip(float _fDeltaTime)
 	TickRecovery(1000.f, 10);
 }
 
+void CShipBase::Die()
+{
+	m_bIsDie = true;
+	m_fCurAttack = m_fCurAttack - m_fLowAttack;
+	m_fCurSpeed = m_fCurSpeed - m_fLowSpeed;
+	m_fCurAttackDelay = m_fCurAttackDelay + m_fLowAttackDelay;
+}
+
+//재활용 지금 재대로 적용안됨
+void CShipBase::Recycle()
+{
+	//부활
+	m_bIsDie = false;
+	m_fCurAttack = m_fCurAttack;
+	m_fCurSpeed = m_fCurSpeed;
+	m_fCurAttackDelay = m_fCurAttackDelay;
+	m_nCurHealth = m_nMaxHealth * 0.2f;
+}
+
 //PLTOYA
 void CShipBase::Skill()
 {
 	if (CCore::GetSkillInst())
 		return;
-	 
-	CCore::SetSkill(new CSkill3);
+
+	if (m_eShipID == 0)
+		CCore::SetSkill(new CSkill1);
+	if (m_eShipID == 1)
+		CCore::SetSkill(new CSkill2);
+	if (m_eShipID == 2)
+		CCore::SetSkill(new CSkill3);
+
 }

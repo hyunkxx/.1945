@@ -15,10 +15,12 @@ public:
 	float GetSpeed() { return m_fSpeed; }
 	float SetSpeed(float _fSpeed) { m_fSpeed = _fSpeed; }
 	bool  IsDie() { return m_bDie; }
+	void SetProjSpeed(float _value) { projectile = _value; }
 private:
 	void moveUp();
 	void dieCheck();
 private:
+	float projectile;
 	float m_fSpeed;
 	float m_fLocalTime;
 	bool  m_bDie;

@@ -2,7 +2,9 @@
 #include "CObj.h"
 #include "CUISystem.h"
 #include "CShipBase.h"
+#include "CCore.h"
 
+bool CUISystem::DebugMode;
 WCHAR* CUISystem::m_szObjectCount;
 
 CShipBase* CUISystem::m_pCopyShip[SHIP_COUNT];
@@ -35,36 +37,38 @@ void CUISystem::Render(HDC _hdc)
 {
 	SetBkMode(_hdc, TRANSPARENT);
 	//Font setting
-	TextOut(_hdc, 10, 10, m_szObjectCount, lstrlen(m_szObjectCount));
+	if (DebugMode)
+	{
+		TextOut(_hdc, 10, 10, m_szObjectCount, lstrlen(m_szObjectCount));
 
-	WCHAR* hp1 = new TCHAR[TEXT_LENGTH];
-	WCHAR* hp2 = new TCHAR[TEXT_LENGTH];
-	WCHAR* hp3 = new TCHAR[TEXT_LENGTH];
+		WCHAR* hp1 = new TCHAR[TEXT_LENGTH];
+		WCHAR* hp2 = new TCHAR[TEXT_LENGTH];
+		WCHAR* hp3 = new TCHAR[TEXT_LENGTH];
 
-	wsprintf(hp1, L" HP [ %d / %d ]", m_pCopyShip[0]->GetCurHealth(), m_pCopyShip[0]->GetMaxHealth());
-	wsprintf(hp2, L" HP [ %d / %d ]", m_pCopyShip[1]->GetCurHealth(), m_pCopyShip[1]->GetMaxHealth());
-	wsprintf(hp3, L" HP [ %d / %d ]", m_pCopyShip[2]->GetCurHealth(), m_pCopyShip[2]->GetMaxHealth());
+		wsprintf(hp1, L" HP [ %d/%d %d ]", m_pCopyShip[0]->GetCurHealth(), m_pCopyShip[0]->GetMaxHealth(), m_pCopyShip[0]->GetID());
+		wsprintf(hp2, L" HP [ %d/%d %d ]", m_pCopyShip[1]->GetCurHealth(), m_pCopyShip[1]->GetMaxHealth(), m_pCopyShip[1]->GetID());
+		wsprintf(hp3, L" HP [ %d %d %d ]", m_pCopyShip[2]->GetCurHealth(), m_pCopyShip[2]->GetMaxHealth(), m_pCopyShip[2]->GetID());
 
-	//HP  1
-	TextOut(_hdc, 10, 100, hp1, lstrlen(hp1));
-	//HP  2
-	TextOut(_hdc, 10, 120, hp2, lstrlen(hp2));
-	//HP  3
-	TextOut(_hdc, 10, 140, hp3, lstrlen(hp3));
+		TextOut(_hdc, 10, 100, hp1, lstrlen(hp1));
+		TextOut(_hdc, 10, 120, hp2, lstrlen(hp2));
+		TextOut(_hdc, 10, 140, hp3, lstrlen(hp3));
 
-	drawBar(_hdc);
+	}
+		drawBar(_hdc);
 }
 
 void CUISystem::drawBar(HDC _hdc)
 {
-	HBRUSH myBrush, hpBrush , shieldBrush , redBrush , warnningBrush, lockBrush;
+	HBRUSH myBrush, oneBrush , twoBrush, trdBrush, shieldBrush , redBrush , warnningBrush, lockBrush , select;
 	redBrush	= (HBRUSH)CreateSolidBrush(RGB(255, 0, 0));
-	hpBrush		= (HBRUSH)CreateSolidBrush(RGB(000, 255, 153));
-	shieldBrush = (HBRUSH)CreateSolidBrush(RGB(102, 255, 255));
+	oneBrush	= (HBRUSH)CreateSolidBrush(RGB(255, 165, 0));
+	twoBrush	= (HBRUSH)CreateSolidBrush(RGB(0, 255, 212));
+	trdBrush	= (HBRUSH)CreateSolidBrush(RGB(255, 192, 203));
+	shieldBrush = (HBRUSH)CreateSolidBrush(RGB(051, 153, 255));
 
 	warnningBrush = (HBRUSH)CreateSolidBrush(RGB(255, 255, 102));
 	lockBrush = (HBRUSH)CreateSolidBrush(RGB(051, 051, 051));
-
+	select = (HBRUSH)CreateSolidBrush(RGB(051, 051, 051));
 	for (int i = 0; i < SHIP_END; i++)
 	{
 		//HP 배경 & 게이지
@@ -83,11 +87,26 @@ void CUISystem::drawBar(HDC _hdc)
 		{
 			Rectangle(_hdc, hpBackSize[i].left, hpBackSize[i].top, hpBackSize[i].right, hpBackSize[i].bottom);
 
-			if( m_pCopyShip[i]->GetCurHealth() >= 70)
+			if (m_pCopyShip[i]->GetCurHealth() >= 70)
 			{
-				myBrush = (HBRUSH)SelectObject(_hdc, hpBrush);
-				Rectangle(_hdc, hpFrontSize[i].left, hpFrontSize[i].top, hpFrontSize[i].right, hpFrontSize[i].bottom);
-				hpBrush = (HBRUSH)SelectObject(_hdc, myBrush);
+				switch (i)
+				{
+				case 0:
+					myBrush = (HBRUSH)SelectObject(_hdc, oneBrush);
+					Rectangle(_hdc, hpFrontSize[i].left, hpFrontSize[i].top, hpFrontSize[i].right, hpFrontSize[i].bottom);
+					oneBrush = (HBRUSH)SelectObject(_hdc, myBrush);
+					break;
+				case 1:
+					myBrush = (HBRUSH)SelectObject(_hdc, twoBrush);
+					Rectangle(_hdc, hpFrontSize[i].left, hpFrontSize[i].top, hpFrontSize[i].right, hpFrontSize[i].bottom);
+					twoBrush = (HBRUSH)SelectObject(_hdc, myBrush);
+					break;
+				case 2:
+					myBrush = (HBRUSH)SelectObject(_hdc, trdBrush);
+					Rectangle(_hdc, hpFrontSize[i].left, hpFrontSize[i].top, hpFrontSize[i].right, hpFrontSize[i].bottom);
+					trdBrush = (HBRUSH)SelectObject(_hdc, myBrush);
+					break;
+				}
 			}
 			else if (m_pCopyShip[i]->GetCurHealth() <= 40)
 			{
@@ -113,8 +132,11 @@ void CUISystem::drawBar(HDC _hdc)
 
 	(HBRUSH)SelectObject(_hdc, myBrush);
 
+	DeleteObject(oneBrush);
+	DeleteObject(twoBrush);
+	DeleteObject(trdBrush);
+	DeleteObject(select);
 	DeleteObject(redBrush);
-	DeleteObject(hpBrush);
 	DeleteObject(shieldBrush);
 	DeleteObject(redBrush);
 	DeleteObject(warnningBrush);
@@ -197,3 +219,30 @@ void CUISystem::setBar(SHIP_ID _eID)
 	}
 }
  
+bool CUISystem::DrawMenu(HDC _hdc, LPCWSTR _szTitle, LPRECT _lpRect , int _cHeight)
+{
+	HBRUSH myBrush, menuBrush;
+	HFONT myFont, newFont;
+	menuBrush = (HBRUSH)CreateSolidBrush(RGB(153, 153, 153));
+	newFont = (HFONT)CreateFont(_cHeight, 0, 0, 0, FW_HEAVY | FW_BOLD ,0 ,0 ,0 , ANSI_CHARSET , OUT_DEFAULT_PRECIS ,
+		CLIP_DEFAULT_PRECIS , PROOF_QUALITY , FF_SCRIPT , _szTitle);
+
+	myFont = (HFONT)SelectObject(_hdc, newFont);
+	myBrush = (HBRUSH)SelectObject(_hdc, menuBrush);
+
+	Rectangle(_hdc, _lpRect->left, _lpRect->top, _lpRect->right, _lpRect->bottom);
+	int centerHorizontal = (_lpRect->left + _lpRect->right) /2;
+	int centerVertical = (_lpRect->top + _lpRect->bottom) /2;
+	size_t szLen = lstrlen(_szTitle);
+
+	TextOut(_hdc, centerHorizontal - szLen, centerVertical, _szTitle , szLen);
+
+	SelectObject(_hdc, myFont);
+	SelectObject(_hdc, myBrush);
+
+	DeleteObject(newFont);
+	DeleteObject(myBrush);
+
+	//일단 false 매프레임 이벤트 체크하면서 반환
+	return false;
+}

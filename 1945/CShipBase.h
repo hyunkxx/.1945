@@ -11,6 +11,7 @@ enum SHIP_ID
 
 class CShipBase : public CObj
 {
+	friend class CCollisionMgr;
 	friend class CInputManager;
 public:
 	CShipBase();
@@ -22,15 +23,17 @@ public:
 	void Update(float _fDeltaTime) override;
 	void Render(HDC _hdc);
 public:
-	void SetShipList(CObj** _pShip) 
-	{ 
+	void SetShipList(CObj** _pShip)
+	{
 		m_pCopyShip = _pShip;
 	};
 
-	void  SetCurSpeed(float _fSpeed) { m_fCurSpeed = _fSpeed; }
-	float GetCurSpeed() { return m_fCurSpeed; }
+	void  SetLowSpeed(float _fSpeed) { m_fLowSpeed = _fSpeed; }
+	float GetLowSpeed() { return m_fLowSpeed; }
 
-	void  SetBullet(list<CObj*>* _pBulletList);
+	void  SetBulletOne(list<CObj*>* _pBulletList);
+	void  SetBulletTwo(list<CObj*>* _pBulletList);
+	void  SetBulletTrd(list<CObj*>* _pBulletList);
 
 	UINT GetCurHealth() { return m_nCurHealth; }
 	UINT GetMaxHealth() { return m_nMaxHealth; }
@@ -56,17 +59,34 @@ public:
 
 	void SetID(SHIP_ID _eID) { m_eShipID = _eID; }
 	SHIP_ID GetID() { return m_eShipID; }
+
+	void Die();
+	void Recycle();
 public:
 	void ChangeShip();
 	void Swap(float _fDeltaTime);
 	void SyncPositionY(float _fDeltaTime);
 public:
-	void TickRecovery(const float _fDuration,const int _value);
+	void TickRecovery(const float _fDuration, const int _value);
 	void HitDamage(int _iDamage);
 	void AddHeal(int _value) { m_nCurHealth += _value; }
 	void AddShield(int _value) { m_nCurShield += _value; }
 
 	void UnActiveShip(float _fDeltaTime);
+
+	void LocalSetting(float _lAttack, float _cAttack , float _lSpeed, float _cSpeed,float _lDelay,float _cDelay, float _projSpeed)
+	{
+		m_projectileSpeed = _projSpeed;
+
+		m_fLowAttack = _lAttack;
+		m_fCurAttack = _cAttack;
+
+		m_fLowAttackDelay = _lDelay;
+		m_fCurAttackDelay = _cDelay;
+
+		m_fLowSpeed = _lSpeed;
+		m_fCurSpeed = _cSpeed;
+	}
 public: // PLTOYA
 	void Skill();
 private:
@@ -77,14 +97,13 @@ private:
 	CObj** m_pCopyShip;
 	SHIP_ID m_eShipID;
 
-	list<CObj*>* m_pBulletList;
+	list<CObj*>* m_pBulletList_one;
+	list<CObj*>* m_pBulletList_two;
+	list<CObj*>* m_pBulletList_trd;
 
 	float m_fLocalTime;
-	float m_fCurSpeed;
 
 	ULONGLONG attackTimer;
-	float m_fAttackDelay;
-	bool  m_bAttackAble;
 
 	int m_nCurHealth;
 	int m_nMaxHealth;
@@ -100,7 +119,24 @@ private:
 
 	ULONGLONG shieldTick;
 	bool m_bTick;
-	bool m_bIsDie;
+
+	//비행기별로 세팅할 변수들
+	float m_projectileSpeed;
+
+	bool  m_bIsDie;
+	bool  m_bAttackAble;
+
+	//CurAttack - LowAttack
+	float m_fLowAttack;
+	float m_fCurAttack; 
+
+	//CurDelay - LowDelay;
+	float m_fLowAttackDelay;
+	float m_fCurAttackDelay;
+
+	//CurSpeed - LowSpeed;
+	float m_fLowSpeed;
+	float m_fCurSpeed;
 };
 
 

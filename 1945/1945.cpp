@@ -33,8 +33,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     pCore->Initalize(g_hWnd, hInstance, g_clientRect);
 
     MSG msg;
-
-    while (true)
+    memset(&msg, 0, sizeof(MSG));
+    while (!CCore::g_bExit)
     {
         LARGE_INTEGER timer, begin, end;
         static float fDeltaTime;
