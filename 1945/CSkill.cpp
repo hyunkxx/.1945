@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "CSkill.h"
 
+#include "CCollisionMgr.h"
+#include "CBullet.h"
+#include "CEnemy.h"
 
 void CSkill::Rotate(POS& _pos, float _rad)
 {
@@ -20,4 +23,15 @@ void CSkill::move(POS& _pos, float _x, float _y)
 {
 	_pos.X_COM += _x;
 	_pos.Y_COM += _y;
+}
+
+void CSkill::DeleteEnemy()
+{
+	auto& enemys=CCollisionMgr::GetEnemyList();
+	for (auto& enemy : enemys)
+		enemy->SetDead();
+		
+	auto& bullets = CCollisionMgr::GetEnemyBulletsList();
+	for (auto& bullet : bullets)
+		bullet->SetDead();
 }

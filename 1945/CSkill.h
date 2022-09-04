@@ -1,7 +1,6 @@
 #pragma once
 
 
-
 class CSkill
 {
 public:
@@ -19,11 +18,20 @@ protected:
 	void Rotate(POS& _pos, float _rad);
 	void Scale(POS& _pos, float _coef);
 	void move(POS& _pos, float _x, float _y);
+	void Update_Rect_S(RECT& _rect, POS& _pos, float _radius)
+	{
+		_rect.left = long(_pos.X_COM - _radius);
+		_rect.top = long(_pos.Y_COM - _radius);
+		_rect.right = long(_pos.X_COM + _radius);
+		_rect.bottom = long(_pos.Y_COM + _radius);
+	}
 
-private:
+protected:
+	void DeleteEnemy();
 
 protected:
 	bool			m_isDead;
 	float			m_localTime;	// 지역시간
+	COLLISION		m_Collision;
 
 };

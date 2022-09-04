@@ -44,7 +44,7 @@ public:
 	void SetY(float _fY) { m_transform.fY = _fY; }
 	void SetScale(float _fScale) { m_transform.fY = _fScale; }
 
-	Transform GetTransform() { return m_transform; }
+	const Transform& GetTransform() { return m_transform; }
 	void	  SetTrnasform(Transform _transform) { m_transform = _transform; }
 	void	  SetTrnasform(float _xPos, float _yPos, float _fScale)
 	{
@@ -53,5 +53,18 @@ public:
 protected:
 	Transform	m_transform;
 	RECT		m_rect;
+
+
+
+
+
+// new
+public:
+	// 플레이어는 이거 호출하지말것
+	bool IsDead() { return m_IsDead; }
+	void SetDead() { m_IsDead = true; }
+protected:
+	bool m_IsDead = false;
+	
 };
 

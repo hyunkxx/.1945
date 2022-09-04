@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CObj.h"
 
+
 int CObj::ObjectTotalCount;
 
 CObj::CObj()

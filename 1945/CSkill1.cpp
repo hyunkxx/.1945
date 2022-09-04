@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "CSkill1.h"
 
+#include "CCollisionMgr.h"
+
+
 
 const POS B2_o[3] =
 {
@@ -32,16 +35,23 @@ CSkill1::CSkill1()
 	}
 
 	memcpy(m_Boom, BOOM, sizeof(m_Boom));
-
 	memset(m_Boom_ltrb, 0, sizeof(m_Boom_ltrb));
 	memset(m_Scale, 0, sizeof(m_Scale));
 
+
+
+	POS pos{ WIDTH / 2, HIGHT+ WIDTH / 2 };
+	float radius = WIDTH / 2;
+	m_Collision = { pos,radius };
 }
 
 void CSkill1::Update(float _fDeltaTime)
 {
 	if (m_isDead)
 		return;
+	
+	CCollisionMgr::Collision_Cheak(m_Collision);
+	//DeleteEnemy();
 
 	// ½ºÅ³ ÃÑ ½Ã°£
 	if (m_localTime > 4.5f)
@@ -62,6 +72,9 @@ void CSkill1::Update(float _fDeltaTime)
 
 	if (m_localTime < 1.75f)
 		return;
+
+	m_Collision.radius+= 350.f * dt;
+
 	m_Scale[6] += 400.f * dt;
 	SetRect(6);
 	if (m_localTime < 2.f)
